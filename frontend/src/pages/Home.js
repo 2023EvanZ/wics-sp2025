@@ -1,40 +1,44 @@
-import { useEffect, useState, useContext } from "react";
-import { Link } from "react-router-dom";
+import { useState, useContext, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
+import MoreSidebar from "../components/MoreSidebar";
 import LogoutButton from "../components/LogoutButton";
 
 const Home = () => {
     const { authTokens } = useContext(AuthContext);
-    const [userData, setUserData] = useState(null);
+    const [selectedBusinessId, setSelectedBusinessId] = useState(null);
+    const navigate = useNavigate();
 
+    // Redirect to login if user is not authenticated
     useEffect(() => {
-        if (authTokens) {
-            fetch("http://127.0.0.1:8000/api/user/", {
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${authTokens.access}`,
-                    "Content-Type": "application/json",
-                },
-            })
-            .then(response => response.json())
-            .then(data => setUserData(data))
-            .catch(error => console.error("Error fetching user data:", error));
+        if (!authTokens) {
+            navigate("/login");
         }
-    }, [authTokens]);
+    }, [authTokens, navigate]);
 
     return (
         <div>
-            <h1>Welcome to GoLoco</h1>
+            <h1>Welcome to BizTok</h1>
+
             {authTokens ? (
                 <>
-                    <p>Welcome, {userData ? userData.username : "loading..."}</p>
+                    <p>You are logged in!</p>
+                    <button onClick={() => setSelectedBusinessId(1)}>More</button>
                     <LogoutButton />
                 </>
             ) : (
                 <>
-                    <p>You are not logged in.</p>
+                    <p>You are not logged in. Redirecting to login...</p>
                     <Link to="/login">Login</Link> | <Link to="/register">Register</Link>
                 </>
+            )}
+
+            {/* Sidebar for business details (only visible if logged in) */}
+            {authTokens && selectedBusinessId && (
+                <MoreSidebar
+                    businessId={selectedBusinessId}
+                    onClose={() => setSelectedBusinessId(null)}
+                />
             )}
         </div>
     );
