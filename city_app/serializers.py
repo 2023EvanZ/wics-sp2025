@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Business
+from .models import Business,Video
 
 class VideoSerializer(serializers.ModelSerializer):
     file_url = serializers.SerializerMethodField()  # To return full URL

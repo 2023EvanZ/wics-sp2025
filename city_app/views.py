@@ -5,6 +5,8 @@ from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
+from .serializers import BusinessSerializer
+from .models import Business
 from rest_framework import status
 
 def get_tokens_for_user(user):
@@ -61,3 +63,17 @@ class RegisterView(APIView):
 
         user = User.objects.create_user(username=username, password=password)
         return Response({"message": "User created successfully"}, status=status.HTTP_201_CREATED)
+
+class DisplayView(APIView):
+    def get(self, request):
+        businesses = Business.objects.all()
+        print(businesses)
+        serializer = BusinessSerializer(businesses, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        serializer = BusinessSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
