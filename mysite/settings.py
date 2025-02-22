@@ -25,7 +25,11 @@ SECRET_KEY = 'django-insecure-**=&xk1qv6x&1$qve7%qf+5+7b6!s#*uvyk5x^dy0n2^&5zf%h
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
+    'testserver'
+]
 
 
 # Application definition
@@ -40,7 +44,7 @@ INSTALLED_APPS = [
     'city_app',
     'corsheaders',
     'rest_framework',
-
+    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
@@ -52,6 +56,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # React frontend URL
 ]
 
 ROOT_URLCONF = 'mysite.urls'
@@ -108,6 +116,11 @@ CORS_ORIGIN_WHITELIST = (
     'http://localhost:3000',
 )
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
