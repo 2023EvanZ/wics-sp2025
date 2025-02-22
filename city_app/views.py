@@ -75,9 +75,23 @@ class DisplayView(APIView):
     def get(self, request):
         businesses = Business.objects.all()
         self.user_lat, self.user_long = 0, 0
-        ordered_businesses = sorted(businesses, key=self.distance)
+        ordered_businesses = sorted(businesses, key=self.distance)[:10]
         print(businesses)
         print(ordered_businesses)
+        serializer = BusinessSerializer(businesses, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        serializer = BusinessSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class DisplayTopView(APIView):
+    def get(self, request):
+        businesses = Business.objects.all().order_by("-get_rating")[:10]
+        print(businesses)
         serializer = BusinessSerializer(businesses, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

@@ -21,6 +21,9 @@ class Business(models.Model):
 
     def get_location(self):
         return self.latitude, self.longitude
+    
+    def get_rating(self):
+        return self.likes / (self.likes + self.dislikes)
 
     def __str__(self):
         return self.name
