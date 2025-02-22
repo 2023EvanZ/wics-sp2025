@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -77,3 +77,14 @@ class DisplayView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class BusinessDetailView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, business_id):
+        try:
+            business = Business.objects.get(id=business_id)
+            serializer = BusinessSerializer(business)
+            return Response(serializer.data)
+        except Business.DoesNotExist:
+            return Response({"error": "Business not found"}, status=404)
