@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'city_app',
     'corsheaders',
     'rest_framework',
-
+    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
@@ -52,6 +52,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # React frontend URL
 ]
 
 ROOT_URLCONF = 'mysite.urls'
@@ -108,6 +112,11 @@ CORS_ORIGIN_WHITELIST = (
     'http://localhost:3000',
 )
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
