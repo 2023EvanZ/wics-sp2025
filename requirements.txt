@@ -1,0 +1,6 @@
+Django>=4.2
+djangorestframework>=3.14
+django-cors-headers>=4.3
+psycopg2>=2.9  # Uncomment if using PostgreSQL
+# mysqlclient>=2.2  # Uncomment if using MySQL
+python-dotenv>=1.0
