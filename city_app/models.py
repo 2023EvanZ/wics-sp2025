@@ -11,7 +11,7 @@ class Business(models.Model):
     location = models.CharField(max_length=200)
     longitude = models.FloatField()
     latitude = models.FloatField()
-    video = models.OneToOneField(Video, on_delete=models.CASCADE, primary_keys=True)
+    video = models.OneToOneField(Video, on_delete=models.CASCADE, primary_key=True)
 
     def __str__(self):
         return self.name

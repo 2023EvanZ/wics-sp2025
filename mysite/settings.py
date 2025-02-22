@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'city_app',
 ]
 
 MIDDLEWARE = [
@@ -124,4 +125,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_ROOT = '/wics-sp2025/city_app/static/videos'
 
-MEDIA_URL = '/static/videos'
+MEDIA_URL = '/static/videos/'
