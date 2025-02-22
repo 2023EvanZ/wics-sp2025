@@ -9,7 +9,6 @@ from .serializers import BusinessSerializer
 from .models import Business
 from rest_framework import status
 
-# Helper function to generate tokens
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
     return {
@@ -17,18 +16,6 @@ def get_tokens_for_user(user):
         'access': str(refresh.access_token),
     }
 
-# Register View
-class RegisterView(APIView):
-    def post(self, request):
-        username = request.data['username']
-        password = request.data['password']
-        if User.objects.filter(username=username).exists():
-            return Response({'error': 'Username already exists'}, status=400)
-        
-        user = User.objects.create_user(username=username, password=password)
-        return Response({'message': 'User created successfully'})
-
-# Login View
 class LoginView(APIView):
     def post(self, request):
         username = request.data['username']
@@ -41,17 +28,27 @@ class LoginView(APIView):
         tokens = get_tokens_for_user(user)
         return Response(tokens)
 
-# Get Logged-in User View
 class UserView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         return Response({'username': request.user.username})
 
-# Logout View
 class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
-        return Response({'message': 'Logged out successfully'})
+        try:
+            refresh_token = request.data.get("refresh_token")
+            print(refresh_token)
+
+            if refresh_token:
+                return Response({"message": "Logged out successfully"}, status=200)
+
+            return Response({"message": "Logged out successfully"}, status=200)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=400)
     
 class RegisterView(APIView):
     def post(self, request):
