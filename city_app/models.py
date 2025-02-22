@@ -1,3 +1,17 @@
 from django.db import models
 
-# Create your models here.
+class Video(models.Model):
+    file = models.FileField(upload_to='videos/')
+
+    def __str__(self):
+        return self.file.url
+
+class Business(models.Model):
+    name = models.CharField(max_length=200)
+    location = models.CharField(max_length=200)
+    longitude = models.FloatField()
+    latitude = models.FloatField()
+    video = models.OneToOneField(Video, on_delete=models.CASCADE, primary_keys=True)
+
+    def __str__(self):
+        return self.name
