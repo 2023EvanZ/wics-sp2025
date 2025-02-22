@@ -23,6 +23,8 @@ class Business(models.Model):
         return self.latitude, self.longitude
     
     def get_rating(self):
+        if not self.likes + self.dislikes:
+            return 0
         return self.likes / (self.likes + self.dislikes)
 
     def __str__(self):
