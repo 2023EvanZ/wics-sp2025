@@ -4,6 +4,7 @@ import VideoDisplay from "./components/Display"; // Adjust path based on new str
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 import LogoutButton from "./components/LogoutButton";
 
 const App = () => {
@@ -12,6 +13,7 @@ const App = () => {
         <AuthProvider>
             <Router>
                 <Routes>
+                  <Route path="/register" element={<Register />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/" element={<LogoutButton />} />
                 </Routes>
