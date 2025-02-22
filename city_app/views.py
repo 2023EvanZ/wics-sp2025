@@ -78,7 +78,7 @@ class DisplayView(APIView):
         ordered_businesses = sorted(businesses, key=self.distance)
         print(businesses)
         print(ordered_businesses)
-        serializer = BusinessSerializer(businesses, many=True)
+        serializer = BusinessSerializer(ordered_businesses, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
