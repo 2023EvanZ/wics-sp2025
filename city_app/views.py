@@ -8,6 +8,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import BusinessSerializer
 from .models import Business
 from rest_framework import status
+import math
 
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
@@ -65,9 +66,18 @@ class RegisterView(APIView):
         return Response({"message": "User created successfully"}, status=status.HTTP_201_CREATED)
 
 class DisplayView(APIView):
+    user_lat = 0
+    user_long = 0
+    def distance(self, business):
+        lat, long = business.get_location()
+        return math.sqrt(pow(self.user_lat - lat, 2) + pow(self.user_long - long, 2))
+
     def get(self, request):
         businesses = Business.objects.all()
+        self.user_lat, self.user_long = 0, 0
+        ordered_businesses = sorted(businesses, key=self.distance)
         print(businesses)
+        print(ordered_businesses)
         serializer = BusinessSerializer(businesses, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
