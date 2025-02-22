@@ -13,5 +13,8 @@ class Business(models.Model):
     latitude = models.FloatField()
     video = models.OneToOneField(Video, on_delete=models.CASCADE, primary_key=True)
 
+    def get_location(self):
+        return self.latitude, self.longitude
+
     def __str__(self):
         return self.name
