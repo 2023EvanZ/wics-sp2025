@@ -34,7 +34,7 @@ return(
         Enter Your Location
     </h2>
     <p className="text-gray-700 mb-6 text-center max-w-md">
-        Use this page to submit your location. This helps us find relevant businesses near you.
+        Use this page to submit your location. This helps us find the closest businesses near you.
     </p>
 
     <form 
@@ -55,7 +55,7 @@ return(
             type="submit" 
             className="w-full mt-4 bg-blue-600 text-white py-3 rounded-lg font-semibold shadow-md hover:bg-blue-700 transition"
         >
-            Send Location
+            Find
         </button>
     </form>
 </div>
