@@ -40,6 +40,12 @@ const VideoDisplay = () => {
       <p>Location: {business.location}</p>
       <p>Coordinates: ({business.latitude}, {business.longitude})</p>
       <p>Video ID: {business.video}</p>
+      {business.video && (
+        <video width="320" height="240" autoPlay muted loop>
+          <source src={"http://127.0.0.1:8000/static/videos/file3.mp4"} type="video/mp4"/>
+          Your browser does not support the video tag.
+        </video>
+      )}
 
       <button onClick={handleNext}>Next Business</button>
     </div>

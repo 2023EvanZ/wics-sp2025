@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='business',
             name='description',
-            field=models.CharField(default='This is a demo business!', max_length=2000),
+            field=models.CharField(default='Your local business', max_length=2000),
             preserve_default=False,
         ),
         migrations.AddField(
