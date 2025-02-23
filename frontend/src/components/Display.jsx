@@ -121,7 +121,7 @@ const VideoDisplay = () => {
         ></iframe>
       </div>
       )}
-      <LogoutButton />
+      {/* <LogoutButton />
       <div>
           <label>
               <input
@@ -144,7 +144,7 @@ const VideoDisplay = () => {
               />
               👎 Dislike ({dislikes})
           </label>
-      </div>
+      </div> */}
     </div>
   );
 };
