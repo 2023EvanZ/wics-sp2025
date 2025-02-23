@@ -7,10 +7,9 @@ from django.contrib.auth import authenticate
 from django.views import generic
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import BusinessSerializer
-from .models import Business
+from .models import Business, Video
 from rest_framework import status
 import math, os, dotenv, requests
-from .forms import BusinessForm
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 
@@ -218,22 +217,40 @@ class BusinessVoteView(APIView):
         except Business.DoesNotExist:
             return Response({"error": "Business not found"}, status=404)
 
-class AddView(generic.CreateView):
+class AddView(APIView):
     def post(self, request, *args, **kwargs):
-        lat, long = self.get_latlng(request.json().location)
-        object = Business.objects.create(
-            id=len(Business.objects.all()),
-            likes = 0,
-            dislikes = 0,
-            latitude=lat,
-            longitude=long,
-        )
-        object.save()
-        return HttpResponseRedirect('display')
+        #print(request.data)
+        lat, long = self.get_latlng(request.data['location'])
+        video = Video.objects.create(file="videos/default.mp4")
+        new_data = {
+            'id':Business.objects.count() + 1,
+            'name':request.data['name'],
+            'likes': 0,
+            'dislikes':0,
+            'latitude':lat,
+            'longitude':long,
+            'description':request.data['description'],
+            'contacts':request.data['contacts'],
+            'location':request.data['location'],
+            'hours':request.data['hours'],
+            'video':video.id
+
+        }
+        print(new_data)
+        serializer = BusinessSerializer(data=new_data)
+        print(serializer.is_valid())
+        if not serializer.is_valid():
+            print(serializer.errors)
+            video.delete()
+        if serializer.is_valid():
+            business = serializer.save()
+            return Response({"message": "Business added successfully", "id": business.id}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def get_latlng(self, address):
         address = address.replace(' ', '+')
         url = f'https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={os.getenv('GOOGLE_EMBED_MAP_KEY')}'
         response = requests.get(url)
+        #print(response.json())
         coords = response.json()['results'][0]['navigation_points'][0]['location']
         return coords['latitude'], coords['longitude']

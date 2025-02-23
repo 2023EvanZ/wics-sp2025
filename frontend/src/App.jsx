@@ -1,6 +1,7 @@
 import React from "react";
 import VideoDisplay from "./components/Display";
 import TopBusinesses from "./components/Top"
+import AddBusinessForm from "./components/BusinessForm";
 
 import { BrowserRouter as Router, Route, Routes, Link, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
@@ -23,6 +24,7 @@ const App = () => {
               <Routes>
                 {/* <Route path="/" element={<><Home /> <VideoDisplay /></>} /> */}
                 <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<AddBusinessForm/>} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/" element={<VideoDisplay />} />
                 <Route path="/top" element={<TopBusinesses />} />
