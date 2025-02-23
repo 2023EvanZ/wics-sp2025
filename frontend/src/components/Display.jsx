@@ -126,7 +126,7 @@ const VideoDisplay = () => {
                             <span className="font-semibold break-words text-gray-700 mr-1">🕒 Hours:</span> {business.hours || "Not Available"}
                         </p>
                         <p className="flex items-center break-words whitespace-normal">
-                            <span className="font-semibold break-words text-gray-700 mr-1">📞 Contact:</span> {business.contact_info || "No contact info"}
+                            <span className="font-semibold break-words text-gray-700 mr-1">📞 Contact:</span> {business.contacts || "No contact info"}
                         </p>
                         <p className="text-gray-700 mt-4 break-words whitespace-normal">{business.description}</p>
                     </div>
