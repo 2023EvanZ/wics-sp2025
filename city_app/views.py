@@ -97,10 +97,17 @@ class DisplayView(APIView):
             return Response({"error": "Business not found"}, status=status.HTTP_404_NOT_FOUND)
     
 class DisplayTopView(APIView):
+    def rating(self,business):
+        user_likes,user_dislikes = business.likes,business.dislikes
+        if not user_likes + user_dislikes:
+            return 0
+        return user_likes / (user_likes + user_dislikes)
+
     def get(self, request):
-        businesses = Business.objects.all().order_by("-get_rating")[:10]
-        print(businesses)
-        serializer = BusinessSerializer(businesses, many=True)
+        businesses = Business.objects.all()
+        ordered_businesses = sorted(businesses, key=self.rating)[:10][::-1]
+        print(ordered_businesses)
+        serializer = BusinessSerializer(ordered_businesses, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
