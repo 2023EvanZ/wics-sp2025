@@ -88,6 +88,14 @@ class DisplayView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+    def delete(self, request):
+        try:
+            business = Business.objects.all()[1]
+            business.delete()
+            return Response({"message": "Business deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+        except Business.DoesNotExist:
+            return Response({"error": "Business not found"}, status=status.HTTP_404_NOT_FOUND)
+    
 class DisplayTopView(APIView):
     def get(self, request):
         businesses = Business.objects.all().order_by("-get_rating")[:10]

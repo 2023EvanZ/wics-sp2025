@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 const VideoDisplay = () => {
   const [businesses, setBusinesses] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0); // Track current business
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     const fetchBusinesses = async () => {
@@ -23,7 +23,6 @@ const VideoDisplay = () => {
 
   // Move to the next business
   const handleNext = () => {
-    console.log(currentIndex)
     setCurrentIndex((prevIndex) => (prevIndex + 1) % businesses.length);
   };
 
@@ -31,7 +30,8 @@ const VideoDisplay = () => {
     return <p>Loading businesses...</p>;
   }
 
-  const business = businesses[currentIndex]; // Get the current business
+  const business = businesses[currentIndex];
+  const videoUrl = `http://127.0.0.1:8000/static/videos/file${business.video}.mp4`;
 
   return (
     <div>
@@ -40,9 +40,10 @@ const VideoDisplay = () => {
       <p>Location: {business.location}</p>
       <p>Coordinates: ({business.latitude}, {business.longitude})</p>
       <p>Video ID: {business.video}</p>
+
       {business.video && (
-        <video width="320" height="240" autoPlay muted loop>
-          <source src={"http://127.0.0.1:8000/static/videos/file3.mp4"} type="video/mp4"/>
+        <video key={videoUrl} width="320" height="240" autoPlay muted loop>
+          <source src={videoUrl} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
       )}
