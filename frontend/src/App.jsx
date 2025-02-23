@@ -1,14 +1,12 @@
 import React from "react";
-import AddBusinessForm from "./components/BusinessForm";
-import UserForm from "./components/UserForm";
-
-import { BrowserRouter as Router, Route, Routes, Link, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import VideoDisplay from "./components/Display";
 import TopBusinesses from "./components/Top";
 import Navbar from "./components/Navbar";
+import UserForm from "./components/UserForm";
 
 const ProtectedRoutes = ({ children }) => {
   const tokens = localStorage.getItem("authTokens");
@@ -45,7 +43,15 @@ const App = () => {
               </ProtectedRoutes>
             }
           />
-          <Route path ="/add" element ={<UserForm/>}/>
+          <Route path="/add" element={
+              <ProtectedRoutes>
+              <>
+                <Navbar />
+                <UserForm />
+              </>
+            </ProtectedRoutes>     
+          } />
+          {/* <Route path="/add" element={<UserForm />} /> */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>

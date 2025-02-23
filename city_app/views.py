@@ -81,7 +81,8 @@ class DisplayView(APIView):
     
     def get_latlng(self, address):
         address = address.replace(' ', '+')
-        url = f'https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={os.getenv('GOOGLE_EMBED_MAP_KEY')}'
+        api_key = os.getenv("GOOGLE_EMBED_MAP_KEY")  # Store the API key
+        url = f"https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={api_key}"
         response = requests.get(url)
         #print(response.json())
         coords = response.json()['results'][0]['navigation_points'][0]['location']
@@ -90,8 +91,10 @@ class DisplayView(APIView):
     def get(self, request):
         businesses = Business.objects.all()
         ordered_businesses = sorted(businesses, key=self.distance)[:10]
+        print("LAT:", settings.LATITUDE, "LONG:", settings.LONGITUDE)
         #print(businesses)
         #print(ordered_businesses)
+        print([(i.latitude, i.longitude) for i in ordered_businesses])
         serializer = BusinessSerializer(ordered_businesses, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -264,7 +267,8 @@ class AddView(APIView):
     
     def get_latlng(self, address):
         address = address.replace(' ', '+')
-        url = f'https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={os.getenv('GOOGLE_EMBED_MAP_KEY')}'
+        api_key = os.getenv("GOOGLE_EMBED_MAP_KEY")  # Store the API key
+        url = f"https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={api_key}"
         response = requests.get(url)
         #print(response.json())
         coords = response.json()['results'][0]['navigation_points'][0]['location']

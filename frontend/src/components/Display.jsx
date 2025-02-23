@@ -136,6 +136,14 @@ const VideoDisplay = () => {
 
         {mapBar && (
             <div className="fixed top-0 left-0 w-90 h-full bg-white shadow-lg p-6 overflow-y-auto transform transition-transform duration-300 ease-in-out">
+                <div className="absolute top-4 left-1/2 transform -translate-x-1/2">
+                    <button
+                        onClick={() => window.location.href = "/add"}
+                        className="bg-blue-600 text-white px-6 py-2 font-semibold rounded-lg shadow-md hover:bg-blue-700 transition"
+                    >
+                        Add
+                    </button>
+                </div>
                 <button
                     className="absolute top-4 right-4 text-gray-600 hover:text-red-600"
                     onClick={() => setMapBar(false)}
