@@ -233,7 +233,7 @@ class AddView(generic.CreateView):
     
     def get_latlng(self, address):
         address = address.replace(' ', '+')
-        url = f'https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={os.getenv('AIzaSyA8s7xWEZilmlYvhsYK-buuOK7k2l-2dIE')}'
+        url = f'https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={os.getenv('GOOGLE_EMBED_MAP_KEY')}'
         response = requests.get(url)
         coords = response.json()['results'][0]['navigation_points'][0]['location']
         return coords['latitude'], coords['longitude']
