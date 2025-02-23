@@ -9,5 +9,6 @@ urlpatterns = [
     path('display/', DisplayView.as_view(), name='business-list'),
     path('top/',DisplayTopView.as_view(), name='top-list'),
     path('business/<int:business_id>/', BusinessDetailView.as_view(), name='business-detail'),
-    path('business/<int:business_id>/vote/<str:vote_type>/', BusinessVoteView.as_view(), name='business-vote'),
+    #path('business/<int:business_id>/vote/<str:vote_type>/', BusinessVoteView.as_view(), name='business-vote'),
+    path('business/<int:business_id>/vote/<str:vote_type>/<str:action>/', BusinessVoteView.as_view(), name='business-vote'),
 ]
