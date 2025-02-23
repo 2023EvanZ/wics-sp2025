@@ -2,11 +2,12 @@ import React from "react";
 import VideoDisplay from "./components/Display";
 import TopBusinesses from "./components/Top"
 
-import { BrowserRouter as Router, Route, Routes, Link, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Home from "./pages/Home";
+// import Login from "./pages/Login";
+import Login from "./components/Login";
+// import Register from "./pages/Register";
+import Register from "./components/Register";
 
 const App = () => {
   return (
@@ -14,14 +15,13 @@ const App = () => {
         <AuthProvider>
             <Router>
               <nav>
-                <h1>My React-Django App</h1>
-                <ul>
+                <h1>Go Loco</h1>
+                {/* <ul>
                   <li><Link to="/">Video Display</Link></li>
                   <li><Link to="/top">Top Businesses</Link></li>
-                </ul>
+                </ul> */}
               </nav>
               <Routes>
-                {/* <Route path="/" element={<><Home /> <VideoDisplay /></>} /> */}
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/" element={<VideoDisplay />} />

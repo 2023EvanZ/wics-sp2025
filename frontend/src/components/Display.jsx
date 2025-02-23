@@ -1,14 +1,11 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import LogoutButton from "./LogoutButton";
-import axios from 'axios';
-import AuthContext from '../context/AuthContext';
 import Votes from "./Votes";
 
 const GOOGLE_MAPS_API_KEY = process.env.REACT_APP_GOOGLE_EMBED_MAP_KEY;
 
 
 const VideoDisplay = () => {
-  const { authTokens } = useContext(AuthContext);
   const [businesses, setBusinesses] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [sideBar, setSideBar] = useState(false);
