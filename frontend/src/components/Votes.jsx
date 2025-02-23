@@ -61,9 +61,9 @@ const Votes = ({ businessId }) => {
         }
       };
 
-    return (
-        <div>
-            <label>
+      return (
+        <div className="flex items-center justify-center gap-x-6 mt-2">
+            <label className="flex items-center space-x-2">
                 <input
                     type="radio"
                     name="vote"
@@ -71,11 +71,12 @@ const Votes = ({ businessId }) => {
                     checked={userVote === "like"}
                     onChange={() => handleVote("like")}
                     readOnly
+                    className="w-5 h-5"
                 />
-                👍 Like ({likes})
+                <span className="text-lg">👍 ({likes})</span>
             </label>
-
-            <label>
+    
+            <label className="flex items-center space-x-2">
                 <input
                     type="radio"
                     name="vote"
@@ -83,8 +84,9 @@ const Votes = ({ businessId }) => {
                     checked={userVote === "dislike"}
                     onChange={() => handleVote("dislike")}
                     readOnly
+                    className="w-5 h-5"
                 />
-                👎 Dislike ({dislikes})
+                <span className="text-lg">👎 ({dislikes})</span>
             </label>
         </div>
     );

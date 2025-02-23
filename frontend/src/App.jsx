@@ -14,13 +14,6 @@ const App = () => {
     <div>
         <AuthProvider>
             <Router>
-              <nav>
-                <h1>Go Loco</h1>
-                {/* <ul>
-                  <li><Link to="/">Video Display</Link></li>
-                  <li><Link to="/top">Top Businesses</Link></li>
-                </ul> */}
-              </nav>
               <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
