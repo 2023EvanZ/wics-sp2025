@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import MoreSidebar from "../components/MoreSidebar";
 import LogoutButton from "../components/LogoutButton";
+import MapSidebar from "../components/MapSidebar"; // Import the Map Sidebar component
 import axios from "axios";
 
 const Home = () => {
@@ -12,6 +13,7 @@ const Home = () => {
     const [likes, setLikes] = useState(0);
     const [dislikes, setDislikes] = useState(0);
     const [userVote, setUserVote] = useState(null); // Track user vote ("like", "dislike", or null)
+    const [businessLocation, setBusinessLocation] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -25,6 +27,7 @@ const Home = () => {
                 const response = await axios.get(`http://127.0.0.1:8000/api/business/${businessId}/`);
                 setLikes(response.data.likes);
                 setDislikes(response.data.dislikes);
+                setBusinessLocation(response.data.location);
             } catch (error) {
                 console.error("Error fetching business details:", error.response?.data);
             }
@@ -48,12 +51,12 @@ const Home = () => {
             if (voteType === "like") {
                 setLikes((prev) => prev + 1);
                 if (userVote === "dislike") {
-                    setDislikes((prev) => prev - 1); // Remove previous dislike if switching
+                    setDislikes((prev) => prev - 1);
                 }
             } else if (voteType === "dislike") {
                 setDislikes((prev) => prev + 1);
                 if (userVote === "like") {
-                    setLikes((prev) => prev - 1); // Remove previous like if switching
+                    setLikes((prev) => prev - 1);
                 }
             }
 
@@ -105,12 +108,16 @@ const Home = () => {
                 </>
             )}
 
-            {authTokens && selectedBusinessId && (
+            <>
                 <MoreSidebar
                     businessId={selectedBusinessId}
                     onClose={() => setSelectedBusinessId(null)}
                 />
-            )}
+                <MapSidebar
+                    businessLocation={businessLocation}
+                    onClose={() => setSelectedBusinessId(null)}
+                />
+            </>
         </div>
     );
 };
