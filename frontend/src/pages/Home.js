@@ -34,6 +34,8 @@ const Home = () => {
     }, [authTokens, navigate, businessId]);
 
     const handleVote = async (voteType) => {
+        if (userVote === voteType) return;
+
         try {
             const response = await axios.post(
                 `http://127.0.0.1:8000/api/business/${businessId}/vote/${voteType}/`,
@@ -43,8 +45,20 @@ const Home = () => {
                 }
             );
 
-            setLikes(response.data.likes);
-            setDislikes(response.data.dislikes);
+            if (voteType === "like") {
+                setLikes((prev) => prev + 1);
+                if (userVote === "dislike") {
+                    setDislikes((prev) => prev - 1); // Remove previous dislike if switching
+                }
+            } else if (voteType === "dislike") {
+                setDislikes((prev) => prev + 1);
+                if (userVote === "like") {
+                    setLikes((prev) => prev - 1); // Remove previous like if switching
+                }
+            }
+
+            // setLikes(response.data.likes);
+            // setDislikes(response.data.dislikes);
             setUserVote(voteType);
         } catch (error) {
             console.error("Vote failed:", error.response?.data);
