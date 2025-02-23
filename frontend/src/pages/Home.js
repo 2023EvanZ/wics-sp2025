@@ -24,7 +24,7 @@ const Home = () => {
             try {
                 const response = await axios.get(`http://127.0.0.1:8000/api/business/${businessId}/`);
 
-                console.log("HOME: " + response.data.id);
+                // console.log("HOME: " + response.data.ud);
 
                 setLikes(response.data.likes);
                 setDislikes(response.data.dislikes);

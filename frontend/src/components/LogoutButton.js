@@ -33,7 +33,7 @@ const LogoutButton = () => {
             localStorage.removeItem("authTokens");
             delete axios.defaults.headers.common["Authorization"];
 
-            navigate("/"); 
+            navigate("/login"); 
         } catch (error) {
             console.error("Logout failed:", error.response?.data);
         }

@@ -1,14 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import LogoutButton from "./LogoutButton";
+import axios from 'axios';
+import AuthContext from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+
 const GOOGLE_MAPS_API_KEY = process.env.REACT_APP_GOOGLE_EMBED_MAP_KEY;
 
 
 const VideoDisplay = () => {
+  const { authTokens } = useContext(AuthContext);
   const [businesses, setBusinesses] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [sideBar, setSideBar] = useState(false);
   const [mapBar, setMapBar] = useState(false);
-
-  const mapUrl = `https://www.google.com/maps/embed/v1/place?key=${GOOGLE_MAPS_API_KEY}&q=285+Fulton+St,New+York,NY`;
+  const [likes, setLikes] = useState(0);
+  const [dislikes, setDislikes] = useState(0);
+  const [userVote, setUserVote] = useState(null); // Track user vote ("like", "dislike", or null)
 
   useEffect(() => {
     const fetchBusinesses = async () => {
@@ -27,6 +34,38 @@ const VideoDisplay = () => {
     fetchBusinesses();
   }, []);
 
+  const handleVote = async (voteType) => {
+    if (userVote === voteType) return;
+
+    try {
+        const response = await axios.post(
+            `http://127.0.0.1:8000/api/business/${business.id}/vote/${voteType}/`,
+            {},
+            {
+                headers: authTokens ? { Authorization: `Bearer ${authTokens.access}` } : {},
+            }
+        );
+
+        if (voteType === "like") {
+            setLikes((prev) => prev + 1);
+            if (userVote === "dislike") {
+                setDislikes((prev) => prev - 1); // Remove previous dislike if switching
+            }
+        } else if (voteType === "dislike") {
+            setDislikes((prev) => prev + 1);
+            if (userVote === "like") {
+                setLikes((prev) => prev - 1); // Remove previous like if switching
+            }
+        }
+
+        // setLikes(response.data.likes);
+        // setDislikes(response.data.dislikes);
+        setUserVote(voteType);
+    } catch (error) {
+        console.error("Vote failed:", error.response?.data);
+    }
+  };
+
   // Move to the next business
   const handleNext = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % businesses.length);
@@ -38,6 +77,7 @@ const VideoDisplay = () => {
 
   const business = businesses[currentIndex];
   const videoUrl = `http://127.0.0.1:8000/static/videos/file${business.video}.mp4`;
+  const mapUrl = `https://www.google.com/maps/embed/v1/place?key=${GOOGLE_MAPS_API_KEY}&q=${business.location}`;
 
   return (
     <div>
@@ -81,6 +121,30 @@ const VideoDisplay = () => {
         ></iframe>
       </div>
       )}
+      <LogoutButton />
+      <div>
+          <label>
+              <input
+                  type="radio"
+                  name="vote"
+                  value="like"
+                  checked={userVote === "like"}
+                  onChange={() => handleVote("like")}
+              />
+              👍 Like ({likes})
+          </label>
+
+          <label style={{ marginLeft: "20px" }}>
+              <input
+                  type="radio"
+                  name="vote"
+                  value="dislike"
+                  checked={userVote === "dislike"}
+                  onChange={() => handleVote("dislike")}
+              />
+              👎 Dislike ({dislikes})
+          </label>
+      </div>
     </div>
   );
 };
