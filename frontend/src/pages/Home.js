@@ -3,18 +3,53 @@ import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import MoreSidebar from "../components/MoreSidebar";
 import LogoutButton from "../components/LogoutButton";
+import axios from "axios";
 
 const Home = () => {
     const { authTokens } = useContext(AuthContext);
+    const [businessId] = useState(1); // Assume displaying business ID 1
     const [selectedBusinessId, setSelectedBusinessId] = useState(null);
+    const [likes, setLikes] = useState(0);
+    const [dislikes, setDislikes] = useState(0);
+    const [userVote, setUserVote] = useState(null); // Track user vote ("like", "dislike", or null)
     const navigate = useNavigate();
 
-    // Redirect to login if user is not authenticated
     useEffect(() => {
         if (!authTokens) {
             navigate("/login");
+            return;
         }
-    }, [authTokens, navigate]);
+
+        const fetchBusinessDetails = async () => {
+            try {
+                const response = await axios.get(`http://127.0.0.1:8000/api/business/${businessId}/`);
+                setLikes(response.data.likes);
+                setDislikes(response.data.dislikes);
+            } catch (error) {
+                console.error("Error fetching business details:", error.response?.data);
+            }
+        };
+
+        fetchBusinessDetails();
+    }, [authTokens, navigate, businessId]);
+
+    const handleVote = async (voteType) => {
+        try {
+            const response = await axios.post(
+                `http://127.0.0.1:8000/api/business/${businessId}/vote/${voteType}/`,
+                {},
+                {
+                    headers: authTokens ? { Authorization: `Bearer ${authTokens.access}` } : {},
+                }
+            );
+
+            setLikes(response.data.likes);
+            setDislikes(response.data.dislikes);
+            setUserVote(voteType);
+        } catch (error) {
+            console.error("Vote failed:", error.response?.data);
+        }
+    };
 
     return (
         <div>
@@ -25,6 +60,29 @@ const Home = () => {
                     <p>You are logged in!</p>
                     <button onClick={() => setSelectedBusinessId(1)}>More</button>
                     <LogoutButton />
+                    <div>
+                        <label>
+                            <input
+                                type="radio"
+                                name="vote"
+                                value="like"
+                                checked={userVote === "like"}
+                                onChange={() => handleVote("like")}
+                            />
+                            👍 Like ({likes})
+                        </label>
+
+                        <label style={{ marginLeft: "20px" }}>
+                            <input
+                                type="radio"
+                                name="vote"
+                                value="dislike"
+                                checked={userVote === "dislike"}
+                                onChange={() => handleVote("dislike")}
+                            />
+                            👎 Dislike ({dislikes})
+                        </label>
+                    </div>
                 </>
             ) : (
                 <>
@@ -33,7 +91,6 @@ const Home = () => {
                 </>
             )}
 
-            {/* Sidebar for business details (only visible if logged in) */}
             {authTokens && selectedBusinessId && (
                 <MoreSidebar
                     businessId={selectedBusinessId}
