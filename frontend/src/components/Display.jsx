@@ -8,6 +8,7 @@ const GOOGLE_MAPS_API_KEY = process.env.REACT_APP_GOOGLE_EMBED_MAP_KEY;
 
 const VideoDisplay = () => {
   const [businesses, setBusinesses] = useState([]);
+  const [businessAddress, setBusinessAddress] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [sideBar, setSideBar] = useState(false);
   const [mapBar, setMapBar] = useState(false);
@@ -35,9 +36,9 @@ const VideoDisplay = () => {
 
   const formatLocation = (location) => {
     const parts = location.split(/,(.+)/);
-    const street = parts[0]?.replace(/\+/g, " ") || "";
-    const cityState = parts[1]?.split(",")[0]?.replace(/\+/g, " ") || "";
-    const country = parts[1]?.split(",")[1]?.replace(/\+/g, " ") || "";
+    const street = parts[0];
+    const cityState = parts[1]?.split(",")[0];
+    const country = parts[1]?.split(",")[1];
 
     return (
         <span>
@@ -48,13 +49,18 @@ const VideoDisplay = () => {
     );
   };
 
+  const formatAddress = (location) => {
+    const formattedAddress = location.replace(/ /g, "+");
+    return formattedAddress;
+  }
+
   if (businesses.length === 0) {
     return <p>Loading businesses...</p>;
   }
 
   const business = businesses[currentIndex];
   const videoUrl = `http://127.0.0.1:8000/static/videos/file${business.video}.mp4`;
-  const mapUrl = `https://www.google.com/maps/embed/v1/place?key=${GOOGLE_MAPS_API_KEY}&q=${business.location}`;
+  const mapUrl = `https://www.google.com/maps/embed/v1/place?key=${GOOGLE_MAPS_API_KEY}&q=${formatAddress(business.location)}`;
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
@@ -136,12 +142,12 @@ const VideoDisplay = () => {
 
         {mapBar && (
             <div className="fixed top-0 left-0 w-90 h-full bg-white shadow-lg p-6 overflow-y-auto transform transition-transform duration-300 ease-in-out">
-                <div className="absolute top-4 left-1/2 transform -translate-x-1/2">
+                <div className="absolute top-4 left-1/2 transform -translate-x-1/2 mb-1">
                     <button
                         onClick={() => window.location.href = "/add"}
                         className="bg-blue-600 text-white px-6 py-2 font-semibold rounded-lg shadow-md hover:bg-blue-700 transition"
                     >
-                        Add
+                        Closest to Me
                     </button>
                 </div>
                 <button
@@ -153,11 +159,11 @@ const VideoDisplay = () => {
                 <iframe
                     title="My Map"
                     width="100%"
-                    height="100%"
+                    height="95%"
                     frameBorder="0"
                     src={mapUrl}
                     allowFullScreen
-                    className="rounded-lg"
+                    className="mt-12 rounded-lg"
                 ></iframe>
             </div>
         )}
