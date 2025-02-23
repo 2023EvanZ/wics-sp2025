@@ -1,7 +1,8 @@
 import React from "react";
-import VideoDisplay from "./components/Display"; // Adjust path based on new structure
+import VideoDisplay from "./components/Display";
+import TopBusinesses from "./components/Top"
 
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Link, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -12,15 +13,22 @@ const App = () => {
     <div>
         <AuthProvider>
             <Router>
-                <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Register />} />
-                </Routes>
+              <nav>
+                <h1>My React-Django App</h1>
+                <ul>
+                  <li><Link to="/display">Video Display</Link></li>
+                  <li><Link to="/top">Top Businesses</Link></li>
+                </ul>
+              </nav>
+              <Routes>
+                <Route path="/" element={<><Home /> <VideoDisplay /></>} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/display" element={<><Home /> <VideoDisplay /></>} />
+                <Route path="/top" element={<TopBusinesses />} />
+              </Routes>
             </Router>
         </AuthProvider>
-        <h1>My React-Django App</h1>
-        <VideoDisplay />
     </div>
   );
 };
