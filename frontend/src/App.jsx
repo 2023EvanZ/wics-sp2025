@@ -1,6 +1,4 @@
 import React from "react";
-import VideoDisplay from "./components/Display";
-import TopBusinesses from "./components/Top"
 import AddBusinessForm from "./components/BusinessForm";
 import UserForm from "./components/UserForm";
 
@@ -47,7 +45,7 @@ const App = () => {
               </ProtectedRoutes>
             }
           />
-
+          <Route path ="/add" element ={<UserForm/>}/>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
