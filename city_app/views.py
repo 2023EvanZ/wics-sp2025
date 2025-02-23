@@ -4,11 +4,17 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
+from django.views import generic
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import BusinessSerializer
 from .models import Business
 from rest_framework import status
-import math
+import math, os, dotenv, requests
+from .forms import BusinessForm
+from django.urls import reverse
+from django.http import HttpResponseRedirect
+
+dotenv.load_dotenv()
 
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
@@ -152,3 +158,23 @@ class BusinessVoteView(APIView):
             })
         except Business.DoesNotExist:
             return Response({"error": "Business not found"}, status=404)
+
+class AddView(generic.CreateView):
+    def post(self, request, *args, **kwargs):
+        lat, long = self.get_latlng(request.json().location)
+        object = Business.objects.create(
+            id=len(Business.objects.all()),
+            likes = 0,
+            dislikes = 0,
+            latitude=lat,
+            longitude=long,
+        )
+        object.save()
+        return HttpResponseRedirect('display')
+    
+    def get_latlng(self, address):
+        address = address.replace(' ', '+')
+        url = f'https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={os.getenv('AIzaSyA8s7xWEZilmlYvhsYK-buuOK7k2l-2dIE')}'
+        response = requests.get(url)
+        coords = response.json()['results'][0]['navigation_points'][0]['location']
+        return coords['latitude'], coords['longitude']
