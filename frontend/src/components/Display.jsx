@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from "react";
+const GOOGLE_MAPS_API_KEY = process.env.REACT_APP_GOOGLE_EMBED_MAP_KEY;
+
 
 const VideoDisplay = () => {
   const [businesses, setBusinesses] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [sideBar, setSideBar] = useState(false);
+  const [mapBar, setMapBar] = useState(false);
+
+  const mapUrl = `https://www.google.com/maps/embed/v1/place?key=${GOOGLE_MAPS_API_KEY}&q=285+Fulton+St,New+York,NY`;
 
   useEffect(() => {
     const fetchBusinesses = async () => {
@@ -49,6 +55,32 @@ const VideoDisplay = () => {
       )}
 
       <button onClick={handleNext}>Next Business</button>
+
+      <button className="open-btn" onClick={() => setSideBar(true)}>More</button>
+      {sideBar && (
+        <div className={`sidebar open`}>
+        <button className="close-btn" onClick={() => setSideBar(false)}>X</button>
+        <h2>{business.name}</h2>
+        <p><strong>Location:</strong> {business.location}</p>
+        <p><strong>Hours:</strong> {business.hours}</p>
+        <p><strong>Contact:</strong> {business.contact_info}</p>
+        <p>{business.description}</p>
+      </div>
+      )}
+      <button className="open-btn" onClick={() => setMapBar(true)}>Map</button>
+      {mapBar && (
+        <div className="map-sidebar open">
+        <button className="close-btn" onClick={() => setMapBar(false)}>X</button>
+        <iframe
+            title="My Map"
+            width="100%"
+            height="100%"
+            frameBorder="0"
+            src={mapUrl}
+            allowFullScreen
+        ></iframe>
+      </div>
+      )}
     </div>
   );
 };

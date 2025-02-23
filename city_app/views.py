@@ -121,6 +121,7 @@ class BusinessDetailView(APIView):
             data = serializer.data
             data["likes"] = business.likes
             data["dislikes"] = business.dislikes
+            data["id"] = business.id
             return Response(data)
         except Business.DoesNotExist:
             return Response({"error": "Business not found"}, status=404)

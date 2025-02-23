@@ -7,7 +7,7 @@ import axios from "axios";
 
 const Home = () => {
     const { authTokens } = useContext(AuthContext);
-    const [businessId] = useState(1); // Assume displaying business ID 1
+    const [businessId, setBusinessId] = useState(1); // Assume displaying business ID 1
     const [selectedBusinessId, setSelectedBusinessId] = useState(null);
     const [likes, setLikes] = useState(0);
     const [dislikes, setDislikes] = useState(0);
@@ -23,8 +23,12 @@ const Home = () => {
         const fetchBusinessDetails = async () => {
             try {
                 const response = await axios.get(`http://127.0.0.1:8000/api/business/${businessId}/`);
+
+                console.log("HOME: " + response.data.id);
+
                 setLikes(response.data.likes);
                 setDislikes(response.data.dislikes);
+                setBusinessId(response.data.id);
             } catch (error) {
                 console.error("Error fetching business details:", error.response?.data);
             }
