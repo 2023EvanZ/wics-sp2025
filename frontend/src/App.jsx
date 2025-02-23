@@ -2,6 +2,7 @@ import React from "react";
 import VideoDisplay from "./components/Display";
 import TopBusinesses from "./components/Top"
 import AddBusinessForm from "./components/BusinessForm";
+import UserForm from "./components/UserForm";
 
 import { BrowserRouter as Router, Route, Routes, Link, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
@@ -28,6 +29,7 @@ const App = () => {
                 <Route path="/register" element={<Register />} />
                 <Route path="/" element={<VideoDisplay />} />
                 <Route path="/top" element={<TopBusinesses />} />
+                <Route path="/add" element={<UserForm />} />
               </Routes>
             </Router>
         </AuthProvider>
