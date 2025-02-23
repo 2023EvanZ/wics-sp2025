@@ -109,6 +109,30 @@ class BusinessDetailView(APIView):
         try:
             business = Business.objects.get(id=business_id)
             serializer = BusinessSerializer(business)
-            return Response(serializer.data)
+
+            data = serializer.data
+            data["likes"] = business.likes
+            data["dislikes"] = business.dislikes
+            return Response(data)
+        except Business.DoesNotExist:
+            return Response({"error": "Business not found"}, status=404)
+        
+class BusinessVoteView(APIView):
+    permission_classes = [AllowAny]  # Anyone can vote, no authentication required
+
+    def post(self, request, business_id, vote_type):
+        try:
+            business = Business.objects.get(id=business_id)
+
+            if vote_type == "like":
+                business.likes += 1  # Increase like count
+            elif vote_type == "dislike":
+                business.dislikes += 1  # Increase dislike count
+
+            business.save()
+            return Response({
+                "likes": business.likes,
+                "dislikes": business.dislikes
+            })
         except Business.DoesNotExist:
             return Response({"error": "Business not found"}, status=404)
