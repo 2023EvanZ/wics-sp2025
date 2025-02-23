@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import AuthContext from "../context/AuthContext";
@@ -23,7 +23,7 @@ const LogoutButton = () => {
                 "http://127.0.0.1:8000/api/logout/",
                 { refresh_token: authTokens?.refresh },
                 {
-                    headers: { Authorization: `Bearer ${authTokens.access}` }, 
+                    headers: { Authorization: `Bearer ${authTokens.access}` },
                 }
             );
 
@@ -33,13 +33,20 @@ const LogoutButton = () => {
             localStorage.removeItem("authTokens");
             delete axios.defaults.headers.common["Authorization"];
 
-            navigate("/login"); 
+            navigate("/login");
         } catch (error) {
             console.error("Logout failed:", error.response?.data);
         }
     };
 
-    return <button onClick={handleLogout}>Logout</button>;
+    return (
+        <button
+            onClick={handleLogout}
+            className="px-6 py-2 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-700 transition"
+        >
+            Logout
+        </button>
+    );
 };
 
 export default LogoutButton;
