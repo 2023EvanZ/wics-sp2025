@@ -5,7 +5,7 @@ class BusinessAdmin(admin.ModelAdmin):
     fields = [field.name for field in Business._meta.get_fields()]
 
 class VideoAdmin(admin.ModelAdmin):
-    fields = [field.name for field in Video._meta.get_fields()]
+    fields = ["file"]
 
 admin.site.register(Business, BusinessAdmin)
 admin.site.register(Video, VideoAdmin)
