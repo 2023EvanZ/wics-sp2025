@@ -7,7 +7,7 @@ class Video(models.Model):
         return self.file.url
 
 class Business(models.Model):
-    id = models.IntegerField()
+    id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=200)
     longitude = models.FloatField()
     latitude = models.FloatField()
