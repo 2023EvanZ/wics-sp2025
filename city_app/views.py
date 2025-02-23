@@ -139,23 +139,82 @@ class BusinessDetailView(APIView):
         except Business.DoesNotExist:
             return Response({"error": "Business not found"}, status=404)
         
+# class BusinessVoteView(APIView):
+#     permission_classes = [AllowAny]  # Allow requests without authentication
+
+#     def post(self, request, business_id, vote_type):
+#         try:
+#             business = Business.objects.get(id=business_id)
+
+#             # Update vote counts based on vote_type
+#             if vote_type == 'like':
+#                 business.likes += 1
+#             elif vote_type == 'dislike':
+#                 business.dislikes += 1
+#             else:
+#                 return Response({"error": "Invalid vote type"}, status=400)
+
+#             business.save()
+#             return Response({"likes": business.likes, "dislikes": business.dislikes}, status=200)
+#         except Business.DoesNotExist:
+#             return Response({"error": "Business not found"}, status=404)
+
 class BusinessVoteView(APIView):
-    permission_classes = [AllowAny]  # Anyone can vote, no authentication required
+    permission_classes = [AllowAny]  # No authentication required
 
-    def post(self, request, business_id, vote_type):
+    def add_vote(self, business, vote_type, request):
+        """ Adds a vote to the specified category and updates session. """
+        if vote_type == "like":
+            business.likes += 1
+        elif vote_type == "dislike":
+            business.dislikes += 1
+        else:
+            return Response({"error": "Invalid vote type"}, status=400)
+
+        # Store vote in session
+        # request.session[session_key] = vote_type
+        # request.session.modified = True
+        business.save()
+
+    def subtract_vote(self, business, vote_type, request):
+        """ Removes a previous vote if it exists and updates session. """
+        # previous_vote = request.session.get(session_key)
+
+        if vote_type == "like":
+            print("Before:", business.likes)
+            business.likes -= 1
+            print("After:", business.likes)
+        elif vote_type == "dislike":
+            print("Before:", business.dislikes)
+            business.dislikes -= 1
+            print("After:", business.dislikes)
+        else:
+            return Response({"error": "No vote to remove"}, status=400)
+
+        # Remove vote from session
+        # if session_key in request.session:
+        #     del request.session[session_key]
+        #     request.session.modified = True
+
+        business.save()
+
+    def post(self, request, business_id, vote_type, action):
+        """ Handles voting by calling add_vote or subtract_vote based on action. """
         try:
+            print("POST CALLED", action)
             business = Business.objects.get(id=business_id)
+            # session_key = f'business_{business_id}_vote'
 
-            if vote_type == "like":
-                business.likes += 1  # Increase like count
-            elif vote_type == "dislike":
-                business.dislikes += 1  # Increase dislike count
+            if action == "add":
+                self.add_vote(business, vote_type, request)
+            elif action == "subtract":
+                print("SUBTRACT CALLED")
+                self.subtract_vote(business, vote_type, request)
+            else:
+                return Response({"error": "Invalid action. Use 'add' or 'subtract'."}, status=400)
 
-            business.save()
-            return Response({
-                "likes": business.likes,
-                "dislikes": business.dislikes
-            })
+            return Response({"likes": business.likes, "dislikes": business.dislikes})
+
         except Business.DoesNotExist:
             return Response({"error": "Business not found"}, status=404)
 

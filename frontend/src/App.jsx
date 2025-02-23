@@ -16,15 +16,15 @@ const App = () => {
               <nav>
                 <h1>My React-Django App</h1>
                 <ul>
-                  <li><Link to="/display">Video Display</Link></li>
+                  <li><Link to="/">Video Display</Link></li>
                   <li><Link to="/top">Top Businesses</Link></li>
                 </ul>
               </nav>
               <Routes>
-                <Route path="/" element={<><Home /> <VideoDisplay /></>} />
+                {/* <Route path="/" element={<><Home /> <VideoDisplay /></>} /> */}
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                <Route path="/display" element={<><Home /> <VideoDisplay /></>} />
+                <Route path="/" element={<VideoDisplay />} />
                 <Route path="/top" element={<TopBusinesses />} />
               </Routes>
             </Router>
