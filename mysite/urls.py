@@ -18,6 +18,8 @@ from django.contrib import admin
 from django.urls import path,include
 from city_app import views
 from rest_framework import routers
+from django.conf.urls.static import static
+from django.conf import settings
 
 router = routers.DefaultRouter()
 #router.register(r'tasks',views.TodoView, 'task')
@@ -26,3 +28,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('city_app.urls'))
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
