@@ -9,7 +9,8 @@ const MapSidebar = ({ businessLocation, onClose }) => {
     }
 
     const GOOGLE_MAPS_API_KEY = process.env.REACT_APP_GOOGLE_EMBED_MAP_KEY;
-    const mapUrl = `https://www.google.com/maps/embed/v1/place?key=${GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(businessLocation)}`;
+    const mapUrl = `https://www.google.com/maps/embed/v1/place?key=${GOOGLE_MAPS_API_KEY}&q=`;
+    //const mapUrl = `https://www.google.com/maps/embed/v1/place?key=${GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(businessLocation)}`;
 
     return (
         <div className="map-sidebar open">
