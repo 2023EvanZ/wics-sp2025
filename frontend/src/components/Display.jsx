@@ -33,6 +33,21 @@ const VideoDisplay = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % businesses.length);
   };
 
+  const formatLocation = (location) => {
+    const parts = location.split(/,(.+)/);
+    const street = parts[0]?.replace(/\+/g, " ") || "";
+    const cityState = parts[1]?.split(",")[0]?.replace(/\+/g, " ") || "";
+    const country = parts[1]?.split(",")[1]?.replace(/\+/g, " ") || "";
+
+    return (
+        <span>
+            <span className="font-semibold">{street}</span>, 
+            <span className="text-gray-600"> {cityState}</span>, 
+            <span className="text-gray-600"> {country}</span>
+        </span>
+    );
+  };
+
   if (businesses.length === 0) {
     return <p>Loading businesses...</p>;
   }
@@ -75,17 +90,17 @@ const VideoDisplay = () => {
                 </button>
 
                 <button
-                    onClick={() => setSideBar(true)}
-                    className="px-6 py-2 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700 transition"
-                    >
-                    More Info
-                </button>
-
-                <button
                     onClick={() => setMapBar(true)}
                     className="px-6 py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition"
                     >
                     Map
+                </button>
+
+                <button
+                    onClick={() => setSideBar(true)}
+                    className="px-6 py-2 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700 transition"
+                    >
+                    More Info
                 </button>
 
                 <LogoutButton />
@@ -93,23 +108,34 @@ const VideoDisplay = () => {
         </div>
 
         {sideBar && (
-            <div className="fixed top-0 right-0 w-80 h-full bg-white shadow-lg p-6 overflow-y-auto">
+            <div className="fixed top-0 right-0 w-85 h-full bg-white shadow-lg p-6 overflow-y-auto">
                 <button
                     className="absolute top-4 right-4 text-gray-600 hover:text-red-600"
                     onClick={() => setSideBar(false)}
                 >
                     ✕
                 </button>
-                <h2 className="text-xl font-bold mb-2">{business.name}</h2>
-                <p><strong>Location:</strong> {business.location}</p>
-                <p><strong>Hours:</strong> {business.hours}</p>
-                <p><strong>Contact:</strong> {business.contact_info}</p>
-                <p>{business.description}</p>
+                <div className="p-6 bg-white shadow-md rounded-lg border border-gray-200 w-full max-w-xl">
+                    <h2 className="text-2xl font-bold text-gray-800 mb-3 break-words">{business.name}</h2>
+                    
+                    <div className="text-gray-600 space-y-2">
+                        <p className="flex items-center break-words whitespace-normal">
+                            <span className="font-semibold break-words text-gray-700 mr-1">📍 Location:</span>{formatLocation(business.location)}
+                        </p>
+                        <p className="flex items-center break-words whitespace-normal">
+                            <span className="font-semibold break-words text-gray-700 mr-1">🕒 Hours:</span> {business.hours || "Not Available"}
+                        </p>
+                        <p className="flex items-center break-words whitespace-normal">
+                            <span className="font-semibold break-words text-gray-700 mr-1">📞 Contact:</span> {business.contact_info || "No contact info"}
+                        </p>
+                        <p className="text-gray-700 mt-4 break-words whitespace-normal">{business.description}</p>
+                    </div>
+                </div>
             </div>
         )}
 
         {mapBar && (
-            <div className="fixed top-0 left-0 w-80 h-full bg-white shadow-lg p-6 overflow-y-auto transform transition-transform duration-300 ease-in-out">
+            <div className="fixed top-0 left-0 w-90 h-full bg-white shadow-lg p-6 overflow-y-auto transform transition-transform duration-300 ease-in-out">
                 <button
                     className="absolute top-4 right-4 text-gray-600 hover:text-red-600"
                     onClick={() => setMapBar(false)}
