@@ -7,11 +7,11 @@ class Video(models.Model):
         return self.file.url
 
 class Business(models.Model):
-    id = models.IntegerField()
+    id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=200)
     longitude = models.FloatField()
     latitude = models.FloatField()
-    video = models.OneToOneField(Video, on_delete=models.CASCADE, primary_key=True)
+    video = models.OneToOneField(Video, on_delete=models.CASCADE)
     description = models.CharField(max_length=2000)
     location = models.CharField(max_length=200)
     hours = models.CharField(max_length=200)
