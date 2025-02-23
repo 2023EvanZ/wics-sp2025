@@ -7,12 +7,12 @@ from django.contrib.auth import authenticate
 from django.views import generic
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import BusinessSerializer
-from .models import Business
+from .models import Business, Video
 from rest_framework import status
 import math, os, dotenv, requests
-from .forms import BusinessForm
 from django.urls import reverse
 from django.http import HttpResponseRedirect
+from django.conf import settings
 
 dotenv.load_dotenv()
 
@@ -72,27 +72,44 @@ class RegisterView(APIView):
         return Response({"message": "User created successfully"}, status=status.HTTP_201_CREATED)
 
 class DisplayView(APIView):
-    user_lat = 0
-    user_long = 0
+
     def distance(self, business):
         lat, long = business.get_location()
-        return math.sqrt(pow(self.user_lat - lat, 2) + pow(self.user_long - long, 2))
+        user_lat = settings.LATITUDE
+        user_long = settings.LONGITUDE
+        return math.sqrt(pow(user_lat - lat, 2) + pow(user_long - long, 2))
+    
+    def get_latlng(self, address):
+        address = address.replace(' ', '+')
+        api_key = os.getenv("GOOGLE_EMBED_MAP_KEY")  # Store the API key
+        url = f"https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={api_key}"
+        response = requests.get(url)
+        #print(response.json())
+        coords = response.json()['results'][0]['navigation_points'][0]['location']
+        return coords['latitude'], coords['longitude']
 
     def get(self, request):
         businesses = Business.objects.all()
-        self.user_lat, self.user_long = 0, 0
         ordered_businesses = sorted(businesses, key=self.distance)[:10]
-        print(businesses)
-        print(ordered_businesses)
+        print("LAT:", settings.LATITUDE, "LONG:", settings.LONGITUDE)
+        #print(businesses)
+        #print(ordered_businesses)
+        print([(i.latitude, i.longitude) for i in ordered_businesses])
         serializer = BusinessSerializer(ordered_businesses, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
-        serializer = BusinessSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        print(request.data)
+        user_lat,user_long = self.get_latlng(request.data['location'])
+        print("POST:",user_lat,user_long)
+
+        settings.LATITUDE = user_lat
+        settings.LONGITUDE = user_long
+        # serializer = BusinessSerializer(data=request.data)
+        # if serializer.is_valid():
+        #     serializer.save()
+        return Response(None, status=status.HTTP_201_CREATED)
+        #return Response(None, status=status.HTTP_400_BAD_REQUEST)
     
     def delete(self, request):
         try:
@@ -218,22 +235,41 @@ class BusinessVoteView(APIView):
         except Business.DoesNotExist:
             return Response({"error": "Business not found"}, status=404)
 
-class AddView(generic.CreateView):
+class AddView(APIView):
     def post(self, request, *args, **kwargs):
-        lat, long = self.get_latlng(request.json().location)
-        object = Business.objects.create(
-            id=len(Business.objects.all()),
-            likes = 0,
-            dislikes = 0,
-            latitude=lat,
-            longitude=long,
-        )
-        object.save()
-        return HttpResponseRedirect('display')
+        #print(request.data)
+        lat, long = self.get_latlng(request.data['location'])
+        video = Video.objects.create(file="videos/default.mp4")
+        new_data = {
+            'id':Business.objects.count() + 1,
+            'name':request.data['name'],
+            'likes': 0,
+            'dislikes':0,
+            'latitude':lat,
+            'longitude':long,
+            'description':request.data['description'],
+            'contacts':request.data['contacts'],
+            'location':request.data['location'],
+            'hours':request.data['hours'],
+            'video':video.id
+
+        }
+        print(new_data)
+        serializer = BusinessSerializer(data=new_data)
+        print(serializer.is_valid())
+        if not serializer.is_valid():
+            print(serializer.errors)
+            video.delete()
+        if serializer.is_valid():
+            business = serializer.save()
+            return Response({"message": "Business added successfully", "id": business.id}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def get_latlng(self, address):
         address = address.replace(' ', '+')
-        url = f'https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={os.getenv('GOOGLE_EMBED_MAP_KEY')}'
+        api_key = os.getenv("GOOGLE_EMBED_MAP_KEY")  # Store the API key
+        url = f"https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={api_key}"
         response = requests.get(url)
+        #print(response.json())
         coords = response.json()['results'][0]['navigation_points'][0]['location']
         return coords['latitude'], coords['longitude']

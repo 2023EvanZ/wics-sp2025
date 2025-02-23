@@ -6,6 +6,7 @@ import Register from "./components/Register";
 import VideoDisplay from "./components/Display";
 import TopBusinesses from "./components/Top";
 import Navbar from "./components/Navbar";
+import UserForm from "./components/UserForm";
 
 const ProtectedRoutes = ({ children }) => {
   const tokens = localStorage.getItem("authTokens");
@@ -42,7 +43,15 @@ const App = () => {
               </ProtectedRoutes>
             }
           />
-
+          <Route path="/add" element={
+              <ProtectedRoutes>
+              <>
+                <Navbar />
+                <UserForm />
+              </>
+            </ProtectedRoutes>     
+          } />
+          {/* <Route path="/add" element={<UserForm />} /> */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
